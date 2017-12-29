@@ -27,6 +27,10 @@ then
 	conda install mayavi
 fi
 
+### bin
+mkdir bin
+ln -fs 3dplot bin/3dplot
+
 ### write bash profile
-CDIR=`pwd`
+CDIR=`pwd`/bin
 echo "export PATH=${CDIR}:\$PATH">>~/.bashrc
