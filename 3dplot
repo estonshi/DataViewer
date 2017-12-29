@@ -1,0 +1,51 @@
+#! /bin/bash
+
+SYSTEM_INFO=`uname -a`
+if [ ${SYSTEM_INFO:0:5} = "Linux" ]
+then 
+	CDIR=$(dirname $(readlink -f "$0"))
+elif [ ${SYSTEM_INFO:0:6} = "Darwin" ]
+then
+	NOW_PATH=`pwd`
+	cd `dirname $0`
+	cd "$(dirname $(readlink -n "$0"))"
+	CDIR=`pwd`
+	cd $NOW_PATH
+else
+	echo "I can't recognize your system. Exit."
+	exit 1
+fi
+
+while getopts "t:f:h" arg; do
+	case $arg in
+		t)
+			case $OPTARG in
+				scalar)
+					EXECFILE=$CDIR/mlab_scalar_field.py
+					;;
+				vector)
+					EXECFILE=$CDIR/mlab_vector_field.py
+					;;
+				*)
+					echo "I don't understand option:" $OPTARG
+					echo "Usage : ./3dplot -t [scalar|vector] -f [xx.npy]"
+					exit 1
+					;;
+			esac
+			;;
+		f)
+			NPYFILE=$OPTARG
+			;;
+		h)
+			echo "Usage : ./3dplot -t [scalar|vector] -f [xx.npy]"
+			exit 1
+			;;
+		*)
+			echo "I don't understand option:" $OPTARG
+			echo "Usage : ./3dplot -t [scalar|vector] -f [xx.npy]"
+			exit 1
+			;;
+		esac
+done
+
+python $EXECFILE $NPYFILE

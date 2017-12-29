@@ -1,0 +1,32 @@
+#! /bin/bash
+
+if [ ${0#"./"} != "INSTALL" ]
+then
+	echo "Error : Please go to '3dView' directory. Exit."
+	exit 1
+fi
+
+### search pyqt4
+FILE=`conda list | grep "pyqt "`
+if [ -z $FILE ]
+then
+	conda install pyqt=4
+else
+	QTVERSION=`echo $FILE | cut -d " " -f 2`
+	if [ `echo $QTVERSION | cut -d "." -f 1 ` -ne 4 ]
+	then
+		conda uninstall pyqt
+		conda install pyqt=4
+	fi
+fi
+
+### search mayavi
+FILE=`conda list | grep "mayavi "`
+if [ -z $FILE ]
+then
+	conda install mayavi
+fi
+
+### write bash profile
+CDIR=`pwd`
+echo "export PATH=${CDIR}:\$PATH">>~/.bashrc
