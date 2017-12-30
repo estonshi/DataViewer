@@ -22,5 +22,5 @@ Open terminal, at anywhere run :
 
 Note : 
 <li> Now **only support ".npy" file**. Please store your matrix into a numpy file.
-<li> Option "scalar" means your data is a scalar field, which requires that the matrix should be in 3 dimension (x,y,z). 
-<li> Option "vector" means your data is a vector field, which requires that the matrix should be in 6 dimension (x,y,z,u,v,w)
+<li> Option "scalar" means your data is a scalar field, which requires that the matrix should be in 3 dimension shape=(x,y,z). 
+<li> Option "vector" means your data is a vector field, which requires that the matrix should be in 6 dimension (s=[X,Y,Z,U,V,W], shape=(6,x,y,z))
