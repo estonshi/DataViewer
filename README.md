@@ -7,6 +7,7 @@ Support Linux and MacOS.
 
 **Need Anaconda2 installed first**. After unzip then switdh to "3dView" directory and run "./INSTALL"
 
+(It is better to check that your qt package in Anaconda is *pyqt4*, not *pyqt5*)
 ```
 unzip -v 3dView.zip
 cd 3dView
@@ -19,6 +20,21 @@ Open terminal, at anywhere run :
 ```
 3dplot -t [scalar|vector] -f [Your data file]
 ```
+
+For simplicity, you can just run :
+
+```
+3dplot.scalar [your data file]
+3dplot.vector [your data file]
+```
+
+#### GUI
+Now we offered a GUI for straight-forward operation. Just open terminal and run :
+
+```
+3dplot.gui
+```
+
 
 Note : 
 <li> Now **only support ".npy" file**. Please store your matrix into a numpy file.

@@ -26,6 +26,9 @@ while getopts "t:f:h" arg; do
 				vector)
 					EXECFILE=$CDIR/mlab_vector_field.py
 					;;
+				gui)
+					EXECFILE=$CDIR/gui.py
+					;;
 				*)
 					echo "I don't understand option:" $OPTARG
 					echo "Usage : ./3dplot -t [scalar|vector] -f [xx.npy]"

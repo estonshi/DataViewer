@@ -29,8 +29,24 @@ fi
 
 ### bin
 mkdir bin
-ln -fs 3dplot bin/3dplot
+cd bin
+ln -fs 3dplot ../3dplot
+touch 3dplot.scalar
+touch 3dplot.vector
+touch 3dplot.gui
+echo "#!/bin/bash" >> 3dplot.scalar
+echo "if [ -z \$1 ]; then echo 'Usage: 3dplot.scalar [your data file]'; fi" >> 3dplot.scalar
+echo "3dplot -t scalar -f $1" >> 3dplot.scalar
+echo "#!/bin/bash" >> 3dplot.vector
+echo "if [ -z \$1 ]; then echo 'Usage: 3dplot.scalar [your data file]'; fi" >> 3dplot.vector
+echo "3dplot -t vector -f $1" >> 3dplot.vector
+echo "#!/bin/bash" >> 3dplot.gui
+echo "3dplot -t gui" >>3dplot.gui
+chmod u+x 3dplot.scalar
+chmod u+x 3dplot.vector
+chmod u+x 3dplot.gui
+chmod u+x 3dplot
 
 ### write bash profile
-CDIR=`pwd`/bin
+CDIR=`pwd`
 echo "export PATH=${CDIR}:\$PATH">>~/.bashrc
