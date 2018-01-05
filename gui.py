@@ -8,6 +8,7 @@ from traitsui.message import message
 from tvtk.pyface.scene_editor import SceneEditor 
 from mayavi.tools.mlab_scene_model import MlabSceneModel
 from mayavi.core.ui.mayavi_scene import MayaviScene
+from mayavi import mlab
 import fix_mayavi_bugs
 
 fix_mayavi_bugs.fix_mayavi_bugs()
@@ -18,6 +19,7 @@ class FieldViewer(HasTraits):
     s = None
     # define plot button
     plotbutton = Button("Import Selected File")
+    rotatebutton = Button("Rotate")
     # define mayavi scene
     scene = Instance(MlabSceneModel, ()) 
     # define a file trait to view:
@@ -47,18 +49,26 @@ class FieldViewer(HasTraits):
             )
 
     G2 = VGroup(
+            HGroup(
                 Item('scene', 
                     editor=SceneEditor(scene_class=MayaviScene), 
                     resizable=True,
                     height=600,
                     width=600,
-                    label='Scene'
+                    label='Scene'),
+                show_labels=False
                 ), 
-                Item('select', 
-                    editor=EnumEditor(name='object.plot_scene'),
-                    tooltip='Display functions',
-                    label='Plot'
+            HGroup(
+                Group(
+                    Item('select', 
+                        editor=EnumEditor(name='object.plot_scene'),
+                        tooltip='Display functions',
+                        label='Plot')
+                    ),
+                Group(
+                    Item('rotatebutton', show_label=False)
                     )
+                )
             )
     
     view = View(
@@ -161,6 +171,17 @@ class FieldViewer(HasTraits):
         x,y,z,u,v,w = s[0],s[1],s[2],s[3],s[4],s[5]
         f = self.scene.mlab.flow(x, y, z, u, v, w)
         self.g = f
+
+    def _rotatebutton_fired(self):
+        @mlab.animate
+        def anim():
+            f = mlab.gcf()
+            while 1:
+                f.scene.camera.azimuth(1)
+                f.scene.render()
+                yield
+
+        a = anim()
 
 
 if __name__ == '__main__':
