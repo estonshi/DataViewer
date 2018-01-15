@@ -1,6 +1,7 @@
 #ecoding=utf8
 import numpy as np
 import sys
+import glob
 
 from traits.api import *
 from traitsui.api import *
@@ -10,6 +11,7 @@ from mayavi.tools.mlab_scene_model import MlabSceneModel
 from mayavi.core.ui.mayavi_scene import MayaviScene
 from mayavi import mlab
 import fix_mayavi_bugs
+import popwin
 
 fix_mayavi_bugs.fix_mayavi_bugs()
 
@@ -19,7 +21,7 @@ class FieldViewer(HasTraits):
     s = None
     # define plot button
     plotbutton = Button("Import Selected File")
-    rotatebutton = Button("Rotate")
+    rotatebutton = Button("Make Rorate Movie")
     # define mayavi scene
     scene = Instance(MlabSceneModel, ()) 
     # define a file trait to view:
@@ -33,6 +35,7 @@ class FieldViewer(HasTraits):
     plot_scene = List(['None','None','None'])
     select = Str
 
+    flag = Int
 
     """
     # define enum list
@@ -173,15 +176,49 @@ class FieldViewer(HasTraits):
         self.g = f
 
     def _rotatebutton_fired(self):
-        @mlab.animate
-        def anim():
+        try:
+            self.s.shape
+            popwin.init(self)
+        except:
+            message("Open a data file first!")
+
+    def _flag_changed(self, old, new):
+        if new == 1:
+            self.make_movie()
+
+    def make_movie(self):
+        delay = 50
+
+        @mlab.animate(delay=delay)
+        def anim(fignums):
             f = mlab.gcf()
-            while 1:
+            f.scene.movie_maker.record = True
+            i = 0
+            while i<fignums:
                 f.scene.camera.azimuth(1)
                 f.scene.render()
+                i += 1
+                popwin.set_now(i*delay/1000.0)
                 yield
+            popwin.set_now('finished')
 
-        a = anim()
+            # render movie
+            dirs = glob.glob(f.scene.movie_maker.directory+'/*')
+            if len(dirs)<1:
+                message("Do not change default save path !")
+                return
+            files = glob.glob(dirs[-1]+'/*.png')
+            savename = dirs[-1].split('/')[-1]
+            import utils
+            utils.processImage(files, f.scene.movie_maker.directory+'/'+savename+'.gif')
+
+            self.flag = 0
+            message("Movie making completed! Files are located on '~/Documents/mayavi_movies/'")
+            return
+
+        time = popwin.get_total_time()
+        fignums = int(time*1000/delay)
+        a = anim(fignums)
 
 
 if __name__ == '__main__':
