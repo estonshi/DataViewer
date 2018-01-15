@@ -42,7 +42,8 @@ To use the gui, you have to import data file first, then click "Import Selected 
 #### Movie Maker
 Click "Make rorate movie" button to create a gif movie. All you have to do is to set the total length of your movie. There is a progress bar at the left-bottom corner of the pop window.
 
-Note : 
-<li> Now **only support ".npy" file**. Please store your matrix into a numpy file.
+----
+### Note : 
+<li> Now **support ".npy"(numpy), ".mat"(matlab) and ".bin"(binary) files**. Please store your matrix into a these file formats.
 <li> Option "scalar" means your data is a scalar field, which requires that the matrix should be in 3 dimension shape=(x,y,z). 
 <li> Option "vector" means your data is a vector field, which requires that the matrix should be in 6 dimension (s=[X,Y,Z,U,V,W], shape=(6,x,y,z))
