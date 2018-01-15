@@ -1,5 +1,6 @@
 #ecoding=utf8
 import numpy as np
+import scipy.io as sio
 import sys
 import glob
 
@@ -88,7 +89,18 @@ class FieldViewer(HasTraits):
       
     def _plotbutton_fired(self):
         try:
-            s = np.load(self.file_name)
+            attr = self.file_name.split('.')[-1]
+            if attr=='npy':
+                s = np.load(self.file_name)
+            elif attr=='mat':
+                temp = sio.loadmat(self.file_name)
+                s = temp.values()[0]
+            elif attr=='bin':
+                s = np.fromfile(self.file_name)
+                size = int(round(len(s)**(1.0/3.0)))
+                s.shape = (size,size,size)
+            else:
+                raise ValueError("")
             s.astype(float)
             if len(s.shape)==3:
                 self.plot_type = self.plot_types[0]

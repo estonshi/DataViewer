@@ -33,8 +33,14 @@ Now we offered a GUI for straight-forward operation. Just open terminal and run 
 
 ```
 3dplot.gui
+[or]
+3dplot -t gui
 ```
 
+To use the gui, you have to import data file first, then click "Import Selected File" button and choose plot type("Plot" select list).
+
+#### Movie Maker
+Click "Make rorate movie" button to create a gif movie. All you have to do is to set the total length of your movie. There is a progress bar at the left-bottom corner of the pop window.
 
 Note : 
 <li> Now **only support ".npy" file**. Please store your matrix into a numpy file.
