@@ -37,13 +37,13 @@ Now we offered a GUI for straight-forward operation. Just open terminal and run 
 3dplot -t gui
 ```
 
-To use the gui, you have to import data file first, then click "Import Selected File" button and choose plot type("Plot" select list).
+To use the gui, you have to import data file first, then click "Import Selected File" button and choose plot type ("Plot" select list).
 
 #### Movie Maker
-Click "Make rorate movie" button to create a gif movie. All you have to do is to set the total length of your movie. There is a progress bar at the left-bottom corner of the pop window.
+Click "Make rorate movie" button to create a gif / avi movie. All you have to do is to set the total length of your movie. There is a progress bar at the left-bottom corner of the pop window.
 
 ----
 ### Note : 
-<li> Now **support ".npy"(numpy), ".mat"(matlab) and ".bin"(binary) files**. Please store your matrix into a these file formats.
-<li> Option "scalar" means your data is a scalar field, which requires that the matrix should be in 3 dimension shape=(x,y,z). 
-<li> Option "vector" means your data is a vector field, which requires that the matrix should be in 6 dimension (s=[X,Y,Z,U,V,W], shape=(6,x,y,z))
+* Now **support ".npy"(numpy), ".mat"(matlab) and ".bin"(binary) files**. Please store your matrix into file in these formats.
+* Option "scalar" means your data is a scalar field, which requires that the matrix should be in 3 dimension shape=(x,y,z). 
+* Option "vector" means your data is a vector field, which requires that the matrix should be in 6 dimension (s=[X,Y,Z,U,V,W], shape=(6,x,y,z))

@@ -226,6 +226,7 @@ class FieldViewer(HasTraits):
 
             self.flag = 0
             message("Movie making completed! Files are located on '~/Documents/mayavi_movies/'")
+            popwin.set_now(0)
             return
 
         time = popwin.get_total_time()
