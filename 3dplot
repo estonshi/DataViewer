@@ -16,6 +16,13 @@ else
 	exit 1
 fi
 
+if [ -z $1 ]
+then
+	echo "Usage : ./3dplot -t [scalar|vector] -f [xx.npy]"
+	echo "   (or) ./3dplot -t gui"
+	exit 1
+fi
+
 while getopts "t:f:h" arg; do
 	case $arg in
 		t)
@@ -30,8 +37,9 @@ while getopts "t:f:h" arg; do
 					EXECFILE=$CDIR/gui.py
 					;;
 				*)
-					echo "I don't understand option:" $OPTARG
-					echo "Usage : ./3dplot -t [scalar|vector] -f [xx.npy] or ./3dplot -t gui"
+					echo "I don't understand sub-option:" $OPTARG
+					echo "Usage : ./3dplot -t [scalar|vector] -f [xx.npy]"
+					echo "   (or) ./3dplot -t gui"
 					exit 1
 					;;
 			esac
@@ -44,7 +52,6 @@ while getopts "t:f:h" arg; do
 			exit 1
 			;;
 		*)
-			echo "I don't understand option:" $OPTARG
 			echo "Usage : ./3dplot -t [scalar|vector] -f [xx.npy] or ./3dplot -t gui"
 			exit 1
 			;;
