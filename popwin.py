@@ -6,25 +6,38 @@ import fix_mayavi_bugs
 
 fix_mayavi_bugs.fix_mayavi_bugs()
 
+"""
+class MyHandler(Handler):
+	def _process_start(self, info):
+		if info.object.flag == False:
+			info.ui.dispose()
+"""
+
 class movie_settings(HasTraits):
 	father = None
 	# define flag to control gui
-	flag = False
+	flag = True
 	now = CFloat
 	# define input text
 	total_time = Int
 	# define current percent
 	curr = Property(depends_on='now')
 	# define button
-	start = Button('Start')
+	start = Button('Make movie')
+	rotate = Button('Rotate')
 	# define view
 	view = View(
 		Group(
 			Group(
 				Item('total_time', label='Movie length (second):')
 			),
-			Group(
-				Item('start', show_label=False)
+			HGroup(
+				Group(
+					Item('rotate', show_label=False)
+				),
+				Group(
+					Item('start', show_label=False)
+				)
 			),
 			orientation = 'vertical',
 			show_border = True
@@ -38,6 +51,10 @@ class movie_settings(HasTraits):
 	def set_now(self, nowtime):
 		self.now = nowtime
 
+	def quit(self):
+		info = Instance(UIInfo)
+		info.ui.dispose()
+
 	# events
 	def _get_curr(self):
 		pre = 100*self.now/(self.total_time+1e-5)
@@ -45,10 +62,13 @@ class movie_settings(HasTraits):
 
 	def _start_fired(self):
 		if self.total_time <= 0:
-			message('Movie length should not <0 !')
+			message('Movie length should not <= 0 !')
 			pass
 		else:
 			self.father.flag = 1
+
+	def _rotate_fired(self):
+		self.father.rotate()
 
 ctrl = None
 
@@ -68,6 +88,10 @@ def set_now(time):
 def get_total_time():
 	global ctrl
 	return ctrl.total_time
+
+def quit():
+	global ctrl
+	ctrl.quit()
 
 if __name__ == '__main__':
 	init(None)

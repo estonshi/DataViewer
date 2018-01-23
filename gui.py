@@ -22,7 +22,7 @@ class FieldViewer(HasTraits):
     s = None
     # define plot button
     plotbutton = Button("Import Selected File")
-    rotatebutton = Button("Make Rorate Movie")
+    rotatebutton = Button("Rorate and Movie")
     # define mayavi scene
     scene = Instance(MlabSceneModel, ()) 
     # define a file trait to view:
@@ -38,12 +38,6 @@ class FieldViewer(HasTraits):
 
     flag = Int
 
-    """
-    # define enum list
-    enum_list = ['3d scalar filed','3d vector filed']
-    # define plot type 
-    select = Enum(*enum_list)
-    """
     G1 = VGroup(
                 Item('file_name', style='simple', label='Open'),
                 Item('file_name', style='custom', label=''),
@@ -111,6 +105,7 @@ class FieldViewer(HasTraits):
             else:
                 np.zeros('Woop!')
             self.s = s
+            self.select = self.plot_scene[0]
             self.plot()
         except:
             message("I can't handle your file!")
@@ -190,9 +185,9 @@ class FieldViewer(HasTraits):
     def _rotatebutton_fired(self):
         try:
             self.s.shape
-            popwin.init(self)
         except:
             message("Open a data file first!")
+        popwin.init(self)
 
     def _flag_changed(self, old, new):
         if new == 1:
@@ -202,7 +197,7 @@ class FieldViewer(HasTraits):
         delay = 50
 
         @mlab.animate(delay=delay)
-        def anim(fignums):
+        def anim_movie(fignums):
             f = mlab.gcf()
             f.scene.movie_maker.record = True
             i = 0
@@ -231,7 +226,21 @@ class FieldViewer(HasTraits):
 
         time = popwin.get_total_time()
         fignums = int(time*1000/delay)
-        a = anim(fignums)
+        a = anim_movie(fignums)
+
+    def rotate(self):
+        delay = 50
+
+        @mlab.animate(delay=delay)
+        def anim():
+            f = mlab.gcf()
+            f.scene.movie_maker.record = False
+            while 1:
+                f.scene.camera.azimuth(1)
+                f.scene.render()
+                yield
+
+        anim()
 
 
 if __name__ == '__main__':
