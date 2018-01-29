@@ -28,11 +28,12 @@ class FieldViewer(HasTraits):
     # define a file trait to view:
     file_name = File
     # init plot type => self._plotbutton_fired()
-    plot_types = ['scalar', 'vector']
+    plot_types = ['scalar', 'vector', 'points']
     plot_type = None
     # plot scence => self.plot() && self.*
     plot_scene_scalar = ['counter','cut plane','volume']
     plot_scene_vector = ['quiver','cut plane','Lorentz attractor trajectory']
+    plot_scene_points = ['common', 'with lines', 'with intensity']
     plot_scene = List(['None','None','None'])
     select = Str
 
@@ -99,9 +100,15 @@ class FieldViewer(HasTraits):
             if len(s.shape)==3:
                 self.plot_type = self.plot_types[0]
                 self.plot_scene = self.plot_scene_scalar
-            elif s.shape[0]==6:
+            elif len(s.shape)==2 and s.shape[0]==6:
                 self.plot_type = self.plot_types[1]
                 self.plot_scene = self.plot_scene_vector
+            elif len(s.shape)==2 and s.shape[0]==3:
+                self.plot_type = self.plot_types[2]
+                self.plot_scene = self.plot_scene_points[:2]
+            elif len(s.shape)==2 and s.shape[0]==4:
+                self.plot_type = self.plot_types[2]
+                self.plot_scene = self.plot_scene_points
             else:
                 np.zeros('Woop!')
             self.s = s
@@ -131,8 +138,32 @@ class FieldViewer(HasTraits):
                 self.plot_vector_scene_3(s)
             else:
                 pass
+        elif self.plot_type == self.plot_types[2]:
+            if self.select == self.plot_scene[0]:
+                self.plot_points_scene_1(s)
+            elif self.select == self.plot_scene[1]:
+                self.plot_points_scene_2(s)
+            elif self.select == self.plot_scene[2]:
+                self.plot_points_scene_3(s)
+            else:
+                pass
         else:
             pass
+
+    def plot_points_scene_1(self, s):
+        self.scene.mlab.clf()
+        g = self.scene.mlab.points3d(s[0], s[1], s[2], color=(1,0.94,0.98), scale_factor=0.9)
+        self.g = g
+
+    def plot_points_scene_2(self, s):
+        self.scene.mlab.clf()
+        g = self.scene.mlab.plot3d(s[0], s[1], s[2], color=(1,0.94,0.98), tube_radius=0.1)
+        self.g = g
+
+    def plot_points_scene_3(self, s):
+        self.scene.mlab.clf()
+        g = self.scene.mlab.points3d(s[0], s[1], s[2], s[3], colormap='rainbow', scale_factor=1)
+        self.g = g
 
     def plot_scalar_scene_1(self, s):
         self.scene.mlab.clf()
@@ -216,7 +247,7 @@ class FieldViewer(HasTraits):
                 return
             files = glob.glob(dirs[-1]+'/*.png')
             savename = dirs[-1].split('/')[-1]
-            import utils
+            from utils import utils
             utils.processImage(files, f.scene.movie_maker.directory+'/'+savename+'.gif')
 
             self.flag = 0
