@@ -20,6 +20,8 @@ class movie_settings(HasTraits):
 	now = CFloat
 	# define input text
 	total_time = Int
+	# define a saving path
+	dir_name = Directory
 	# define current percent
 	curr = Property(depends_on='now')
 	# define button
@@ -29,7 +31,8 @@ class movie_settings(HasTraits):
 	view = View(
 		Group(
 			Group(
-				Item('total_time', label='Movie length (second):')
+				Item('total_time', label='Movie length (second):'),
+				Item('dir_name', style='simple', label='File saving to')
 			),
 			HGroup(
 				Group(
@@ -63,7 +66,6 @@ class movie_settings(HasTraits):
 	def _start_fired(self):
 		if self.total_time <= 0:
 			message('Movie length should not <= 0 !')
-			pass
 		else:
 			self.father.flag = 1
 
@@ -77,6 +79,7 @@ def init(fatherr):
 	ctrl = movie_settings()
 	ctrl.father = fatherr
 	ctrl.edit_traits()
+	ctrl.dir_name = fatherr.f.scene.movie_maker.directory
 
 def set_now(time):
 	global ctrl
@@ -92,6 +95,9 @@ def get_total_time():
 def quit():
 	global ctrl
 	ctrl.quit()
+
+def get_dir():
+	return ctrl.dir_name
 
 if __name__ == '__main__':
 	init(None)

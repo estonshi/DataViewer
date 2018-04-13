@@ -218,6 +218,9 @@ class FieldViewer(HasTraits):
             self.s.shape
         except:
             message("Open a data file first!")
+        self.f = mlab.gcf()
+        self.f.scene.movie_maker.record = True
+        self.dir_path = self.f.scene.movie_maker.directory
         popwin.init(self)
 
     def _flag_changed(self, old, new):
@@ -229,8 +232,8 @@ class FieldViewer(HasTraits):
 
         @mlab.animate(delay=delay)
         def anim_movie(fignums):
-            f = mlab.gcf()
-            f.scene.movie_maker.record = True
+            f = self.f
+            f.scene.movie_maker.directory = popwin.get_dir()
             i = 0
             while i<fignums:
                 f.scene.camera.azimuth(1)
@@ -241,17 +244,17 @@ class FieldViewer(HasTraits):
             popwin.set_now('finished')
 
             # render movie
-            dirs = glob.glob(f.scene.movie_maker.directory+'/*')
+            dirs = glob.glob(popwin.get_dir()+'/*')
             if len(dirs)<1:
                 message("Do not change default save path !")
                 return
             files = glob.glob(dirs[-1]+'/*.png')
             savename = dirs[-1].split('/')[-1]
             from utils import utils
-            utils.processImage(files, f.scene.movie_maker.directory+'/'+savename+'.gif')
+            utils.processImage(files, popwin.get_dir()+'/'+savename+'.gif')
 
             self.flag = 0
-            message("Movie making completed! Files are located on '~/Documents/mayavi_movies/'")
+            message("Movie making completed! Files are located on '"+popwin.get_dir()+"'")
             popwin.set_now(0)
             return
 
