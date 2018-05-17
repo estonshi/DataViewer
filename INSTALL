@@ -30,7 +30,7 @@ fi
 ### bin
 mkdir bin
 cd bin
-ln -fs 3dplot ../3dplot
+ln -fs ../3dplot 3dplot
 touch 3dplot.scalar
 touch 3dplot.vector
 touch 3dplot.gui
