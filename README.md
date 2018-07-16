@@ -55,6 +55,6 @@ Click "Rorate and Movie" button to rotate the scene or create a gif movie.
 * "scalar" plot means your data contains a scalar field, which requires that the matrix should be in 3 dimension.
 	* shape=(Nx,Ny,Nz)
 * "vector" plot means your data contains a vector field, which requires that the matrix should be in 6 dimension.
-	* s=[X,Y,Z,U,V,W] , shape=(6,Nd,Nd,Nd)
+	* s=[X,Y,Z,U,V,W] , shape=(6,Nd)
 * "points plot" means your data contains a set of points (with or without intensity) in 3D space, and the input matrix should be in 3 or 4 dimension. 
-	* s=[X,Y,Z] or s=[X,Y,Z,Intensity] , shape=(3 or 4,Nd,Nd,Nd)
+	* s=[X,Y,Z] or s=[X,Y,Z,Intensity] , shape=(3 or 4,Nd)
