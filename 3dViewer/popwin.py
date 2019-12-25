@@ -2,9 +2,9 @@ import numpy as np
 from traits.api import *
 from traitsui.api import *
 
-import fix_mayavi_bugs
+#import fix_mayavi_bugs
 
-fix_mayavi_bugs.fix_mayavi_bugs()
+#fix_mayavi_bugs.fix_mayavi_bugs()
 
 """
 class MyHandler(Handler):

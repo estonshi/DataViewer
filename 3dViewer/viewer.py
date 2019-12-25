@@ -1,4 +1,3 @@
-#ecoding=utf8
 import numpy as np
 import scipy.io as sio
 import sys
@@ -11,10 +10,10 @@ from tvtk.pyface.scene_editor import SceneEditor
 from mayavi.tools.mlab_scene_model import MlabSceneModel
 from mayavi.core.ui.mayavi_scene import MayaviScene
 from mayavi import mlab
-import fix_mayavi_bugs
+#import fix_mayavi_bugs
 import popwin
 
-fix_mayavi_bugs.fix_mayavi_bugs()
+#fix_mayavi_bugs.fix_mayavi_bugs()
 
 class FieldViewer(HasTraits):
 
@@ -250,7 +249,7 @@ class FieldViewer(HasTraits):
                 return
             files = glob.glob(dirs[-1]+'/*.png')
             savename = dirs[-1].split('/')[-1]
-            from utils import utils
+            import utils
             utils.processImage(files, popwin.get_dir()+'/'+savename+'.gif')
 
             self.flag = 0

@@ -1,60 +1,57 @@
-## <center>3dView Help Doc</center>
+## DataViewer README
+---
 
-### 1) How To Use It ?
-----
-This tool is for viewing 3D fields which stores in a 3D matrix.
+### INTRO
+This tool is for dataset visualization.
 
-#### SETUP
-Support Linux and MacOS.
+1. 2dViewer : designed for HDF5 dataset visualization
+2. 3dViewer : designed for 3D volume dataset visualization
 
-**Need Anaconda2 installed first**. After unzip then switdh to "3dView" directory and run "./INSTALL"
+### SETUP
+The programs are based on Anaconda environment.
 
-(It is better to check that your qt package in Anaconda is **pyqt4**, not *pyqt5*, or there might be some problems while installing.)
+1. Install Anaconda 3
+2. Run 'make.sh' (for Linux and MacOS user), or create conda environment using 'environment.yaml' by yourself
 
-```
-unzip -v 3dView.zip
-cd 3dView
-./INSTALL
-```
+### PLOT
 
-#### PLOT
-Open terminal, at anywhere run :
-
-```
-3dplot -t [scalar|vector] -f [Your data file]
+1. View HDF5 dataset
+```bash
+python ./2dViewer/viewer.py
 ```
 
-For simplicity, you can just run :
-
+2. View 3D volume
+```bash
+python ./3dViewer/viewer.py
 ```
-3dplot.scalar [your data file]
-3dplot.vector [your data file]
-```
+---
 
-#### GUI
-It is highly recomended to use GUI for straight-forward operation. Now GUI supports scalar fields, vector fields and points plot. To use it, just open terminal and run :
+### DOC
 
-```
-3dplot.gui
-[or]
-3dplot -t gui
-```
+#### (1) 3dViewer
 
-The first thing you need to do is to import data file , then click "Import Selected File" button. You can choose different plot types (The select list named "Plot") as you want.
+The first thing you need to do is to choose data file , then click "Import Selected File" button. You can choose different plot types (The select list named "Plot") as you want.
 
-#### Movie Maker
+**[Movie Maker]**
+
 Click "Rorate and Movie" button to rotate the scene or create a gif movie. 
 
 * To make a movie, you should set the total length first and click "Make movie" (There is a progress bar at the left-bottom corner of the pop window). 
 * Just click "Rotate" if you only want a rotation view of the model.
 
-----
-### 2) About Data Format : 
+**[Data Format]**
+
 * Now **support ".npy"(numpy), ".mat"(matlab) and ".bin"(binary) files**. Please store your matrix into file in these formats.
 	 
-* "scalar" plot means your data contains a scalar field, which requires that the matrix should be in 3 dimension.
+* "scalar" plot means your data contains a scalar field, which requires that the input should have 3 dimensions.
 	* shape=(Nx,Ny,Nz)
-* "vector" plot means your data contains a vector field, which requires that the matrix should be in 6 dimension.
-	* s=[X,Y,Z,U,V,W] , shape=(6,Nd)
-* "points plot" means your data contains a set of points (with or without intensity) in 3D space, and the input matrix should be in 3 or 4 dimension. 
-	* s=[X,Y,Z] or s=[X,Y,Z,Intensity] , shape=(3 or 4,Nd)
+* "vector" plot means your data contains a vector field, which requires that the input should have 2 dimensions, with 6 rows and Num_of_points columns.
+	* s=[X,Y,Z,Vx,Vy,Vz] , shape=(6, Num_of_points)
+* "points plot" means your data contains a set of points (with or without intensity) in 3D space, and the input should have 2 dimensions, with 3 or 4 rows and Num_of_points columns.
+	* s=[X,Y,Z] or s=[X,Y,Z,Intensity] , shape=(3 or 4, Num_of_points)
+
+#### (2) 2dViewer
+
+Just **drag** HDF5 file into the file list and double click dataset name to plot.
+
+There are several parameters to adjust the visualization.
