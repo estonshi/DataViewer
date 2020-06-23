@@ -21,7 +21,7 @@ class movie_settings(HasTraits):
 	# define input text
 	total_time = Int
 	# define a saving path
-	dir_name = Directory
+	dir_name = Directory()
 	# define current percent
 	curr = Property(depends_on='now')
 	# define button

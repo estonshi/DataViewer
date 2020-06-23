@@ -1,5 +1,6 @@
 import numpy as np
 import sys
+import h5py
 
 def processImage(infiles, savepath):
 	from PIL import Image
@@ -28,6 +29,15 @@ def generateAVI(infiles, savepath):
 
 	video.release()
 	cv2.destroyAllWindows()
+
+def h5_parser(fp):
+	keys = []
+	def _get_all_dataset(key):
+		if isinstance(fp[key], h5py._hl.dataset.Dataset):
+			keys.append(key)
+	fp.visit(_get_all_dataset)
+	return keys
+
 
 if __name__=="__main__":
 	import glob

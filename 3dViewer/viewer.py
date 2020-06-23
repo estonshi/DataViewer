@@ -1,10 +1,12 @@
 import numpy as np
 import scipy.io as sio
+import h5py
 import sys
 import glob
 
 from traits.api import *
 from traitsui.api import *
+from traitsui.file_dialog import open_file
 from traitsui.message import message
 from tvtk.pyface.scene_editor import SceneEditor 
 from mayavi.tools.mlab_scene_model import MlabSceneModel
@@ -12,6 +14,8 @@ from mayavi.core.ui.mayavi_scene import MayaviScene
 from mayavi import mlab
 #import fix_mayavi_bugs
 import popwin
+import chosebox
+import utils
 
 #fix_mayavi_bugs.fix_mayavi_bugs()
 
@@ -25,7 +29,8 @@ class FieldViewer(HasTraits):
     # define mayavi scene
     scene = Instance(MlabSceneModel, ()) 
     # define a file trait to view:
-    file_name = File
+    file_name = File()
+    openFile = Button('Open...')
     # init plot type => self._plotbutton_fired()
     plot_types = ['scalar', 'vector', 'points']
     plot_type = None
@@ -34,12 +39,15 @@ class FieldViewer(HasTraits):
     plot_scene_vector = ['quiver','cut plane','Lorentz attractor trajectory']
     plot_scene_points = ['common', 'with lines', 'with intensity']
     plot_scene = List(['None','None','None'])
-    select = Str
+    select = Str()
 
     flag = Int
 
     G1 = VGroup(
-                Item('file_name', style='simple', label='Open'),
+                HGroup(
+                    Item('openFile', show_label=False),
+                    Item('file_name', style='readonly', width=150)
+                ),
                 Item('file_name', style='custom', label=''),
                 Item('_'),
                 #Item('file_name', style='readonly', label='File name'),
@@ -75,8 +83,13 @@ class FieldViewer(HasTraits):
             ,
             G2
         ),
-        width = 900, resizable=True, title="3dplot GUI"
+        width = 900, resizable=True, title="3dView"
     )
+
+    def _openFile_changed(self):
+        filen = open_file()
+        if filen != '':
+            self.file_name = filen
 
     def _select_changed(self):
         self.plot()
@@ -88,7 +101,18 @@ class FieldViewer(HasTraits):
                 s = np.load(self.file_name)
             elif attr=='mat':
                 temp = sio.loadmat(self.file_name)
-                s = temp.values()[0]
+                chosen = chosebox.show_chosebox(list(temp.keys()))
+                if len(chosen) == 0:
+                    return
+                s = temp[chosen]
+            elif attr=='h5':
+                temp = h5py.File(self.file_name, 'r')
+                all_dataset = utils.h5_parser(temp)
+                chosen = chosebox.show_chosebox(all_dataset)
+                if len(chosen) == 0:
+                    return
+                s = temp[chosen][()]
+                temp.close()
             elif attr=='bin':
                 s = np.fromfile(self.file_name)
                 size = int(round(len(s)**(1.0/3.0)))
@@ -113,12 +137,13 @@ class FieldViewer(HasTraits):
             self.s = s
             self.select = self.plot_scene[0]
             self.plot()
-        except:
-            message("I can't handle your file!")
+        except Exception as e:
+            message("I can't handle your file!\nError: %s" % e)
             pass
 
     def plot(self):
         s = self.s
+        self.scene.mlab.gcf().scene.background = (0.6, 0.6, 0.6)
         if self.plot_type == self.plot_types[0]:
             if self.select == self.plot_scene[0]:
                 self.plot_scalar_scene_1(s)
@@ -177,7 +202,6 @@ class FieldViewer(HasTraits):
         cut = self.scene.mlab.pipeline.scalar_cut_plane(field.children[0], plane_orientation="y_axes")
         cut.enable_contours = True
         cut.contour.number_of_contours = 20
-        self.scene.mlab.gcf().scene.background = (0.8, 0.8, 0.8)
         self.g = field
       
     def plot_scalar_scene_3(self, s):
@@ -198,12 +222,10 @@ class FieldViewer(HasTraits):
         self.scene.mlab.clf()
         x,y,z,u,v,w = s[0],s[1],s[2],s[3],s[4],s[5]
         src = self.scene.mlab.pipeline.vector_field(x, y, z, u, v, w)
-        src_cut = self.scene.mlab.pipeline.vector_cut_plane(src, mask_points=2, scale_factor=5)
+        src_cut = self.scene.mlab.pipeline.vector_cut_plane(src, mask_points=2, scale_factor=5, plane_orientation='x_axes')
         src = self.scene.mlab.pipeline.vector_field(x, y, z, u, v, w)
         magnitude = self.scene.mlab.pipeline.extract_vector_norm(src)
-        surface = self.scene.mlab.pipeline.iso_surface(magnitude)
-        surface.actor.property.opacity = 0.3
-        self.scene.mlab.gcf().scene.background = (0.8, 0.8, 0.8)
+        surface = self.scene.mlab.pipeline.iso_surface(magnitude, opacity=0.3)
         self.g = src_cut
 
     def plot_vector_scene_3(self, s):
@@ -249,7 +271,6 @@ class FieldViewer(HasTraits):
                 return
             files = glob.glob(dirs[-1]+'/*.png')
             savename = dirs[-1].split('/')[-1]
-            import utils
             utils.processImage(files, popwin.get_dir()+'/'+savename+'.gif')
 
             self.flag = 0

@@ -1,7 +1,6 @@
 channels:
   - defaults
   - conda-forge
-  - anaconda
 dependencies:
   - conda=4.7.12
   - python=3.7.4
@@ -13,6 +12,6 @@ dependencies:
   - pyqtgraph=0.10.0
   - pillow=6.2.0
   - pip:
+    - vtk==8.1.2
     - mayavi
     - PyQt5
-
